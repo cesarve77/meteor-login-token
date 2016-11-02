@@ -8,9 +8,13 @@ Meteor.startup(function () {
 
 // Default expiration is 1 hour
 let expiration = 60 * 60 * 1000;
+let maxUse =1
 
 LoginToken.setExpiration = function (exp) {
   expiration = exp;
+};
+LoginToken.setMaxUse = function (use) {
+  maxUse = use;
 };
 
 // Hat can generate unique tokens
@@ -33,7 +37,7 @@ Accounts.registerLoginHandler(function (loginRequest) {
     throw new Meteor.Error('Invalid token');
   }
 
-  if (doc.used === true) {
+  if (doc.used > doc.maxUse) {
     throw new Meteor.Error('Token has already been used');
   }
 
@@ -45,10 +49,8 @@ Accounts.registerLoginHandler(function (loginRequest) {
 
   // Update it to used
   LoginToken.TokenCollection.update(doc._id, {
-    $set: {
-      used: true,
-      usedAt: new Date(),
-    },
+    $inc: {used: 1},
+    $set: {lastUsedAt: new Date()},
 
   });
 
@@ -66,6 +68,7 @@ LoginToken.createTokenForUser = function (userId) {
   const token = hat(256);
   LoginToken.TokenCollection.insert({
     userId: userId,
+    maxUse: maxUse,
     expiresAt: new Date(Date.now() + expiration),
     token: token,
   });

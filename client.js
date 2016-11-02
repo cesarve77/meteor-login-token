@@ -7,11 +7,11 @@
  * @return {Object}             Key/value object
  */
 var parseQueryString = function (queryString) {
-  return _.object(_.map(queryString
-    .split('&'),
-    function (keyval) {
-      return _.map(keyval.split('='), (val) => decodeURIComponent(val));
-    }));
+    return _.object(_.map(queryString
+            .split('&'),
+        function (keyval) {
+            return _.map(keyval.split('='), (val) => decodeURIComponent(val));
+        }));
 };
 
 /**
@@ -22,48 +22,48 @@ var parseQueryString = function (queryString) {
 var objectToQueryString = (obj) => _.map(obj, (val, key) => `${key}=${val}`).join('&');
 
 function getParams(str) {
-  let queryString = str || window.location.search || '';
+    let queryString = str || window.location.search || '';
 
-  queryString = queryString.substring(queryString.indexOf('?') + 1);
+    queryString = queryString.substring(queryString.indexOf('?') + 1);
 
-  return parseQueryString(queryString);
+    return parseQueryString(queryString);
 }
 
 LoginToken.checkToken = function (token, params, argName = 'authToken') {
-  if (!token) {
-    return;
-  }
-  const userId = Tracker.nonreactive(Meteor.userId);
+    if (!token) {
+        return;
+    }
+    const userId = Tracker.nonreactive(Meteor.userId);
+    console.log('**************userId', userId)
 
-  let methodArgument = {};
+    let methodArgument = {};
 
-  methodArgument[`dispatch_${argName}`] = token;
-  if (userId) {
-    LoginToken.emit('loggedInClient');
-  } else {
+    methodArgument[`dispatch_${argName}`] = token;
+
     Accounts.callLoginMethod({
-      methodArguments: [methodArgument],
-      userCallback: function (err) {
-        if (err) {
-          LoginToken.emit('errorClient', err);
-        } else {
-          LoginToken.emit('loggedInClient');
+        methodArguments: [methodArgument],
+        userCallback: function (err) {
+            if (err) {
+                LoginToken.emit('errorClient', err);
+            } else {
+                LoginToken.emit('loggedInClient');
 
-          if (params) {
-            delete params[argName];
+                if (params) {
+                    delete params[argName];
 
-            // Make it look clean by removing the authToken from the URL
-            if (window.history) {
-              const url =`${window.location.href.split('?')[0]}?${objectToQueryString(params)}`;
+                    // Make it look clean by removing the authToken from the URL
+                    if (window.history) {
+                        const url = `${window.location.href.split('?')[0]}?${objectToQueryString(params)}`;
 
-              window.history.pushState(null, null, url);
+                        window.history.pushState(null, null, url);
+                    }
+                }
             }
-          }
-        }
-      },
+        },
     });
-  }
-};
+
+}
+;
 
 /**
  * Parse querystring for token argument, if found use it to auto-login the
@@ -71,13 +71,13 @@ LoginToken.checkToken = function (token, params, argName = 'authToken') {
  * @param  {String} name Name of argument (default "authToken")
  */
 LoginToken.autologin = function (name = 'authToken') {
-  Meteor.startup(function () {
-    const params = getParams(window.location.search);
+    Meteor.startup(function () {
+        const params = getParams(window.location.search);
 
-    if (params[name]) {
-      LoginToken.checkToken(params[name], params, name);
-    } else {
-      LoginToken.emit('noToken');
-    }
-  });
+        if (params[name]) {
+            LoginToken.checkToken(params[name], params, name);
+        } else {
+            LoginToken.emit('noToken');
+        }
+    });
 };

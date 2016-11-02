@@ -36,3 +36,7 @@ The "error" callbacks receive the error as the only argument, and the `"loggedIn
 ### Change expiration
 Set the token expiration by running `LoginToken.setExpiration(val)`. It is in **milliseconds**. It default to one hour (60 * 60 * 1000).
 
+
+### Change Max of use
+Set the max of use by running `LoginToken.setMaxUse(Max)`.  It default to one use.
+
