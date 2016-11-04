@@ -1,6 +1,5 @@
 /* jshint esnext:true */
 /* global LoginToken:true */
-
 /**
  * Parse a query string into a key/value object
  * @param  {String} queryString String to parse
@@ -34,7 +33,7 @@ LoginToken.checkToken = function (token, params, argName = 'authToken') {
         return;
     }
     const userId = Tracker.nonreactive(Meteor.userId);
-    console.log('**************userId', userId)
+    console.log('**************userId', userId);;
 
     let methodArgument = {};
 
