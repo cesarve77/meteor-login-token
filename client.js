@@ -33,8 +33,7 @@ LoginToken.checkToken = function (token, params, argName = 'authToken') {
         return;
     }
     const userId = Tracker.nonreactive(Meteor.userId);
-    console.log('**************userId', userId);;
-
+    console.log('**************userId', userId);
     let methodArgument = {};
 
     methodArgument[`dispatch_${argName}`] = token;

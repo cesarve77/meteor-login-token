@@ -8,7 +8,7 @@ Meteor.startup(function () {
 
 // Default expiration is 1 hour
 let expiration = 60 * 60 * 1000;
-let maxUse =1
+let maxUse =1;
 
 LoginToken.setExpiration = function (exp) {
   expiration = exp;
