@@ -5,11 +5,9 @@ Package.describe({
     'in the URL',
   git: 'https://github.com/DispatchMe/meteor-login-token',
 });
-
 Npm.depends({
   'hat': '0.0.3',
 });
-
 Package.onUse(function(api) {
   api.versionsFrom('1.2');
 
